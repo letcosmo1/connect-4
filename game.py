@@ -89,50 +89,17 @@ def check_sequence(board, col):
                 three_in_a_row = True
             horizontal_count = 0
 
-    # Check vertical connections if no 3-in-a-row has been found
-    if not three_in_a_row:
-        vertical_count = 0
-        for r in range(ROWS):
-            if board[r][col] == piece:
-                vertical_count += 1
-            else:
-                if vertical_count == 2:
-                    two_in_a_row = True
-                elif vertical_count == 3:
-                    three_in_a_row = True
-                vertical_count = 0
-
-    # Check diagonal connections if no 3-in-a-row has been found
-    if not three_in_a_row:
-        diag_count = 0
-        for i in range(-3, 4):
-            r = row + i
-            c = col + i
-            if 0 <= r < ROWS and 0 <= c < COLS:
-                if board[r][c] == piece:
-                    diag_count += 1
-                else:
-                    if diag_count == 2:
-                        two_in_a_row = True
-                    elif diag_count == 3:
-                        three_in_a_row = True
-                    diag_count = 0
-
-        # Reset diagonal check for the opposite direction
-        if not three_in_a_row:
-            diag_count = 0
-            for i in range(-3, 4):
-                r = row - i
-                c = col + i
-                if 0 <= r < ROWS and 0 <= c < COLS:
-                    if board[r][c] == piece:
-                        diag_count += 1
-                    else:
-                        if diag_count == 2:
-                            two_in_a_row = True
-                        elif diag_count == 3:
-                            three_in_a_row = True
-                        diag_count = 0
+    # Check vertical connections
+    vertical_count = 0
+    for r in range(ROWS):
+        if board[r][col] == piece:
+            vertical_count += 1
+        else:
+            if vertical_count == 2:
+                two_in_a_row = True
+            elif vertical_count == 3:
+                three_in_a_row = True
+            vertical_count = 0
 
     # Remove the piece (undo move)
     board[row][col] = EMPTY
@@ -145,14 +112,6 @@ def is_board_full(board):
         if board[ROWS - 1][col] == EMPTY:  
             return False  
     return True
-
-def epsilon_greedy_select_move(output, epsilon=0.1):
-    if np.random.rand() < epsilon:
-        # Randomly choose a valid column
-        return np.random.choice(np.where(output > 0)[0])
-    else:
-        # Exploit: Choose the best move
-        return np.argmax(output)
 
 def is_center_column_move(col):
     center_columns = [COLS // 2 - 1, COLS // 2, COLS // 2 + 1]  # Considering columns 3, 4, 5 as center
@@ -202,11 +161,11 @@ def play_game(model):
         if current_player == PLAYER2:
             # Diminui o score se a jogada for isolada
             if is_isolated_move(board, row, col):
-                score -= 3
+                score -= 5
 
             # Aumenta o score se a jogada bloquear uma possível vitória do adversário
             if blocks_opponent_win(board, col):
-                score += 13
+                score += 21
 
             # Aumenta o score se a jogada for no centro
             if is_center_column_move(col):

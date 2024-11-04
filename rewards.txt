@@ -3,8 +3,8 @@
 invalid_move        -144
 losing              -21
 winning             34
-blocking_opponent   13
+blocking_opponent   21
 tree_in_a_row       13
 two_in_row          5
+is_isolated_move    -5
 is_center_column    3
-is_isolated_move    -3
