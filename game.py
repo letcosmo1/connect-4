@@ -136,23 +136,36 @@ def play_game(model):
         current_player = PLAYER1 if turn % 2 == 0 else PLAYER2
         
         if current_player == PLAYER1:
-            col = p1.jogada(board, current_player)  
-        else:
-             # Predict move and check validity
+            # Predict move and check validity
             output = nn.predict_move(model, board, current_player)
             col = np.argmax(output)
 
             while not is_valid_location(board, col):
+                # Check if the board is full
+                if is_board_full(board):
+                    return score  # Return the score if the board is full
+                
+                # Modify the output probabilities
+                output = nn.predict_move(model, board, current_player)
+                output[col] = 0  # Mask out the invalid column
+
+                col = np.argmax(output) 
+        else:
+            # Predict move and check validity
+            output = nn.predict_move(model, board, current_player)
+            col = np.argmax(output)
+
+            while not is_valid_location(board, col):
+                # Check if the board is full
+                if is_board_full(board):
+                    return score  # Return the score if the board is full
+                
                 # Penalize for invalid move and modify probability distribution to re-select
                 score -= 144
                 
                 # Modify the output probabilities
                 output = nn.predict_move(model, board, current_player)
                 output[col] = 0  # Mask out the invalid column
-
-                # Check if the board is full
-                if is_board_full(board):
-                    return score  # Return the score if the board is full
 
                 col = np.argmax(output)
 
@@ -161,7 +174,7 @@ def play_game(model):
         if current_player == PLAYER2:
             # Diminui o score se a jogada for isolada
             if is_isolated_move(board, row, col):
-                score -= 5
+                score -= 13
 
             # Aumenta o score se a jogada bloquear uma possível vitória do adversário
             if blocks_opponent_win(board, col):
@@ -169,7 +182,7 @@ def play_game(model):
 
             # Aumenta o score se a jogada for no centro
             if is_center_column_move(col):
-                score += 3
+                score += 5
 
             # Aumenta o score se a jogada fizer uma sequência
             two_in_a_row, three_in_a_row = check_sequence(board, col)

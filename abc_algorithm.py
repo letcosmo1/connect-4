@@ -54,7 +54,7 @@ def optimize_nn(model):
 
     # #WEIGHTS FROM SAVED MODEL
     # Load the saved model
-    loaded_model = tf.keras.models.load_model("modelv2.h5")
+    loaded_model = tf.keras.models.load_model("modelv3.h5")
     saved_weights = [tf.convert_to_tensor(w) for w in loaded_model.get_weights()]  # Convert each weight to a tensor
     # #Initialize the population
     population = []
@@ -97,4 +97,4 @@ nn_model = nn.create_nn()
 optimized_model = optimize_nn(nn_model)
 
 # Save model
-optimized_model.save("modelv3.h5")
+optimized_model.save("modelv4.h5")
