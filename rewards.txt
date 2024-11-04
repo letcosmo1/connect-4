@@ -1,0 +1,10 @@
+1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597, 2584, 4181, 6765
+
+invalid_move        -144
+losing              -21
+winning             34
+blocking_opponent   13
+tree_in_a_row       13
+two_in_row          5
+is_center_column    3
+is_isolated_move    -3
