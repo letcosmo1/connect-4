@@ -149,25 +149,16 @@ def play_game(model):
                 output = nn.predict_move(model, board, current_player)
                 output[col] = 0  # Mask out the invalid column
 
-                col = np.argmax(output) 
+                col = np.argmax(output)
         else:
             # Predict move and check validity
             output = nn.predict_move(model, board, current_player)
             col = np.argmax(output)
 
-            while not is_valid_location(board, col):
-                # Check if the board is full
-                if is_board_full(board):
-                    return score  # Return the score if the board is full
-                
+            if not is_valid_location(board, col):
                 # Penalize for invalid move and modify probability distribution to re-select
                 score -= 144
-                
-                # Modify the output probabilities
-                output = nn.predict_move(model, board, current_player)
-                output[col] = 0  # Mask out the invalid column
-
-                col = np.argmax(output)
+                return score
 
         row = get_next_open_row(board, col)
 
@@ -198,7 +189,7 @@ def play_game(model):
             if current_player == PLAYER2:
                 score += 34
             else:
-                score -= 21
+                score -= 34
             return score 
 
         turn += 1
